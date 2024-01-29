@@ -1,0 +1,23 @@
+name: ObjTT
+
+dependencies:
+- base
+- array
+- containers
+- mtl
+
+default-extensions:
+- LambdaCase
+
+executable:
+  main: Main.hs
+  source-dirs:
+  - .
+  - src
+
+  # exclude some modules
+  when:
+    condition: false
+    other-modules:
+      - ObjTT.Skel
+      - ObjTT.Test

@@ -13,6 +13,8 @@ import ObjTT.Lex   ( Token, mkPosToken )
 import ObjTT.Par   ( pListDecl, myLexer )
 import ObjTT.Print ( Print, printTree )
 
+import Check (checkDecls, runChecker)
+
 type Err        = Either String
 type ParseFun a = [Token] -> Err a
 type Verbosity  = Int
@@ -22,8 +24,8 @@ main = do
   args <- getArgs
   case args of
     ["--help"] -> usage
-    []         -> getContents >>= run pListDecl
-    fs         -> mapM_ (runFile pListDecl) fs
+    []         -> run =<< getContents
+    fs         -> mapM_ runFile fs
 
 usage :: IO ()
 usage = do
@@ -34,17 +36,17 @@ usage = do
     , "  (files)         Parse content of files verbosely."
     ]
 
-runFile :: (Print a, Show a) => ParseFun a -> FilePath -> IO ()
-runFile v p f = do
+runFile :: FilePath -> IO ()
+runFile f = do
   putStrLn f
-  readFile f >>= run v p
+  run =<< readFile f
 
-run :: (Print a, Show a) => ParseFun a -> String -> IO ()
-run p s =
-  case p ts of
+run :: String -> IO ()
+run s =
+  case pListDecl ts of
     Left err -> do
       putStrLn "\nParse              Failed...\n"
-      putStrV v "Tokens:"
+      putStrLn "Tokens:"
       mapM_ (putStr . showPosToken . mkPosToken) ts
       putStrLn err
       exitFailure
@@ -55,4 +57,7 @@ run p s =
   showPosToken ((l,c),t) = concat [ show l, ":", show c, "\t", show t ]
 
 check :: [Decl] -> IO ()
-check = _
+check ds =
+  case runChecker $ checkDecls ds of
+    Left err -> putStrLn "Oh, no!!" >> print err
+    Right () -> putStrLn "Yes!!!!"
