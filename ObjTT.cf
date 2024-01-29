@@ -1,0 +1,32 @@
+terminator Decl "" ;
+
+DAxiom.    Decl ::= Ident ":" Exp ";" ;
+DDef.      Decl ::= Ident ":" Exp ":=" Exp ";" ;
+
+EId.       Exp  ::= Exp1 "=" Exp1 ;
+ERefl.     Exp1 ::= "refl" "(" Exp ")" ;
+EIdRec.    Exp1 ::= "idrec" "(" "[" Ident "," Ident "," Ident "]" Exp
+                            "," Exp
+                            "," "[" Ident "]" Exp
+                            ")" ;
+EIdConv.   Exp1 ::= "idconv" "(" "[" Ident "," Ident "," Ident "]" Exp
+                             "," Exp
+                             "," "[" Ident "]" Exp
+                             ")" ;
+
+EPi.       Exp1 ::= "Pi" "(" Exp "," "[" Ident "]" Exp ")" ;
+ELam.      Exp1 ::= "\\" "(" Exp "," "[" Ident "]" Exp ")" ;
+EApp.      Exp1 ::= "app" "(" Exp "," Exp ")" ;
+EBetaConv. Exp1 ::= "betaconv" "(" Exp "," "[" Ident "]" Exp ")" ;
+
+EVar.      Exp1 ::= Ident ;
+EUniv.     Exp1 ::= "U";
+EEl.       Exp1 ::= "El" "(" Exp ")";
+
+-- coercions Exp 1;
+
+_. Exp  ::= Exp1;
+_. Exp1 ::= "(" Exp ")";
+
+comment "--" ;
+comment "{-" "-}" ;
