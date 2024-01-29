@@ -1,2 +1,8 @@
-id : Pi(U,[T] Pi(El(T), [x]El(T))) ;
-id_def : id = \(U,[T]\(El(T),[x]x));
+-- id : Pi(U,[T] Pi(El(T), [x]El(T))) ;
+-- id_def : id = \(U,[T]\(El(T),[x]x));
+
+id : (T : U) -> (x : El(T)) -> El(T) ;
+id_def : id = (\ (T : U) -> \ (x : El(T)) -> x) ;
+
+apply : (T : U) -> (V : U) -> (f : (x : El(T)) -> El(V)) -> (x : El(T)) -> El(V);
+apply_def : apply = (\ (T : U) -> \ (V : U) -> \ (f : (x : El(T)) -> El(V)) -> \ (x : El(T)) -> f x);

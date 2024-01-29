@@ -4,29 +4,26 @@ DAxiom.    Decl ::= Ident ":" Exp ";" ;
 -- DDef.      Decl ::= Ident ":" Exp ":=" Exp ";" ;
 
 EId.       Exp  ::= Exp1 "=" Exp1 ;
-ERefl.     Exp1 ::= "refl" "(" Exp ")" ;
-EIdRec.    Exp1 ::= "idrec" "(" "[" Ident "," Ident "," Ident "]" Exp
+ERefl.     Exp2 ::= "refl" "(" Exp ")" ;
+EIdRec.    Exp2 ::= "idrec" "(" "[" Ident "," Ident "," Ident "]" Exp
                             "," Exp
                             "," "[" Ident "]" Exp
                             ")" ;
-EIdConv.   Exp1 ::= "idconv" "(" "[" Ident "," Ident "," Ident "]" Exp
+EIdConv.   Exp2 ::= "idconv" "(" "[" Ident "," Ident "," Ident "]" Exp
                              "," Exp
                              "," "[" Ident "]" Exp
                              ")" ;
 
-EPi.       Exp1 ::= "Pi" "(" Exp "," "[" Ident "]" Exp ")" ;
-ELam.      Exp1 ::= "\\" "(" Exp "," "[" Ident "]" Exp ")" ;
-EApp.      Exp1 ::= "app" "(" Exp "," Exp ")" ;
-EBetaConv. Exp1 ::= "betaconv" "(" Exp "," "[" Ident "]" Exp ")" ;
+EPi.       Exp  ::= "(" Ident ":" Exp ")" "->" Exp ;
+ELam.      Exp  ::= "\\" "(" Ident ":" Exp ")" "->" Exp ;
+EApp.      Exp1 ::= Exp1 Exp2 ;
+EBetaConv. Exp2 ::= "betaconv" "(" Exp "," "[" Ident "]" Exp ")" ;
 
-EVar.      Exp1 ::= Ident ;
-EUniv.     Exp1 ::= "U";
-EEl.       Exp1 ::= "El" "(" Exp ")";
+EVar.      Exp2 ::= Ident ;
+EUniv.     Exp2 ::= "U";
+EEl.       Exp2 ::= "El" "(" Exp ")";
 
--- coercions Exp 1;
-
-_. Exp  ::= Exp1;
-_. Exp1 ::= "(" Exp ")";
+coercions Exp 2;
 
 comment "--" ;
 comment "{-" "-}" ;
