@@ -6,6 +6,10 @@ dependencies:
 - containers
 - mtl
 
+build-tools:
+- alex
+- happy
+
 default-extensions:
 - LambdaCase
 
