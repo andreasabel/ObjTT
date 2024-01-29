@@ -1,25 +1,25 @@
 terminator Decl "" ;
 
-DAxiom.    Decl ::= Ident ":" Exp ";" ;
--- DDef.      Decl ::= Ident ":" Exp ":=" Exp ";" ;
+DAxiom.    Decl ::= Name ":" Exp ";" ;
+-- DDef.      Decl ::= Name ":" Exp ":=" Exp ";" ;
 
 EId.       Exp  ::= Exp1 "=" Exp1 ;
 ERefl.     Exp2 ::= "refl" "(" Exp ")" ;
-EIdRec.    Exp2 ::= "idrec" "(" "[" Ident "," Ident "," Ident "]" Exp
+EIdRec.    Exp2 ::= "idrec" "(" "[" Name "," Name "," Name "]" Exp
                             "," Exp
-                            "," "[" Ident "]" Exp
+                            "," "[" Name "]" Exp
                             ")" ;
-EIdConv.   Exp2 ::= "idconv" "(" "[" Ident "," Ident "," Ident "]" Exp
+EIdConv.   Exp2 ::= "idconv" "(" "[" Name "," Name "," Name "]" Exp
                              "," Exp
-                             "," "[" Ident "]" Exp
+                             "," "[" Name "]" Exp
                              ")" ;
 
-EPi.       Exp  ::= "(" Ident ":" Exp ")" "->" Exp ;
-ELam.      Exp  ::= "\\" "(" Ident ":" Exp ")" "->" Exp ;
+EPi.       Exp  ::= "(" Name ":" Exp ")" "->" Exp ;
+ELam.      Exp  ::= "\\" "(" Name ":" Exp ")" "->" Exp ;
 EApp.      Exp1 ::= Exp1 Exp2 ;
-EBetaConv. Exp2 ::= "betaconv" "(" Exp "," "[" Ident "]" Exp ")" ;
+EBetaConv. Exp2 ::= "betaconv" "(" Exp "," "[" Name "]" Exp ")" ;
 
-EVar.      Exp2 ::= Ident ;
+EVar.      Exp2 ::= Name ;
 EUniv.     Exp2 ::= "U";
 EEl.       Exp2 ::= "El" "(" Exp ")";
 
@@ -27,3 +27,8 @@ coercions Exp 2;
 
 comment "--" ;
 comment "{-" "-}" ;
+
+token Name (char - [ "-()[]{}.,;@\" \n\r\t\f" ]) + ;
+  -- Both too liberal and too restrictive:
+  -- Only excluding Agdas reserved symbols (too liberal).
+  -- Excluding "-" for the sake of comments (too restrictive).

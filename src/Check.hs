@@ -11,8 +11,8 @@ import qualified Data.Map as Map
 import ObjTT.Abs
 import ObjTT.Print ( Print, printTree )
 
-type Sig = Map Ident Type
-type Cxt = [(Ident,Type)]
+type Sig = Map Name Type
+type Cxt = [(Name,Type)]
 
 data Env = Env
   { envSig :: Sig
@@ -20,8 +20,8 @@ data Env = Env
   }
 
 data TypeError
-  = UnboundVariable Ident
-  | UnboundIdentifier Ident
+  = UnboundVariable Name
+  | UnboundName Name
   | TypeMismatch Type Type
   deriving Show
 
@@ -39,7 +39,7 @@ data Type
 
 data Term
   = Var Index
-  | Def Ident
+  | Def Name
   | Refl Type Term
   | IdRec Type (Abs (Abs (Abs Type))) Term Term Term (Abs Term)
   | IdConv Type (Abs (Abs (Abs Type))) Term (Abs Term)
@@ -60,7 +60,7 @@ checkDecls = \case
     (x,t) <- checkDecl d
     addSignature x t $ checkDecls ds
 
-checkDecl :: Decl -> M (Ident, Type)
+checkDecl :: Decl -> M (Name, Type)
 checkDecl = \case
   DAxiom x e -> do
     t <- checkType e
@@ -142,7 +142,7 @@ emptyEnv = Env
   , envCxt = []
   }
 
-lookupCxt :: Ident -> M (Index, Type)
+lookupCxt :: Name -> M (Index, Type)
 lookupCxt x = do
   cxt <- asks envCxt
   loop 0 cxt
@@ -154,17 +154,17 @@ lookupCxt x = do
         | x == y -> return (i, weakType (i+1) t)
         | otherwise -> loop (i+1) cxt
 
-lookupSig :: Ident -> M (Term, Type)
+lookupSig :: Name -> M (Term, Type)
 lookupSig x = do
   sig <- asks envSig
   case Map.lookup x sig of
-    Nothing -> throwError $ UnboundIdentifier x
+    Nothing -> throwError $ UnboundName x
     Just t -> return (Def x, t)
 
-addContext :: Ident -> Type -> M a -> M a
+addContext :: Name -> Type -> M a -> M a
 addContext x t = local $ \ env -> env { envCxt = (x,t) : envCxt env }
 
-addSignature :: Ident -> Type -> M a -> M a
+addSignature :: Name -> Type -> M a -> M a
 addSignature x t = local $ \ env -> env { envSig = Map.insert x t $ envSig env }
 
 weak :: Int -> Term -> Term
