@@ -1,0 +1,8 @@
+/.stack-work/
+/dist-newstyle/
+/stack.yaml.lock
+/ObjTT.cabal
+
+# BNFC-generated files
+/ObjTT/
+/Makefile
