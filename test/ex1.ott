@@ -1,2 +1,2 @@
-id : Pi(U,[T] Pi(El(T), [x]El(T)))
-   := \(U,[T]\(El(T),[x]x));
+id : Pi(U,[T] Pi(El(T), [x]El(T))) ;
+id_def : id = \(U,[T]\(El(T),[x]x));
