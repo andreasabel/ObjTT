@@ -5,4 +5,7 @@ id : (T : U) -> (x : El(T)) -> El(T) ;
 id_def : id = (\ (T : U) -> \ (x : El(T)) -> x) ;
 
 apply : (T : U) -> (V : U) -> (f : (x : El(T)) -> El(V)) -> (x : El(T)) -> El(V);
-apply_def : apply = (\ (T : U) -> \ (V : U) -> \ (f : (x : El(T)) -> El(V)) -> \ (x : El(T)) -> f x);
+apply_def : apply = (\ (T : U) -> \ (V : U) -> \ (f : (x : El(T)) -> El(V)) -> \ (x : El(T)) -> f x);+apply_def : apply = (\ (T : U) -> \ (V : U) -> \ (f : (x : El(T)) -> El(V)) -> \ (x : El(T)) -> f x);
+
+myrefl : (A : U) -> (a : El(A)) -> a = a;
+myrefl_def : myrefl = (\ (A : U) -> \ (a : El(A)) -> refl(a));
