@@ -23,6 +23,8 @@ data TypeError
   = UnboundVariable Name
   | UnboundName Name
   | TypeMismatch Type Type
+  | NotAType Exp
+  | NotATerm Exp
   deriving Show
 
 type Index = Int
@@ -80,6 +82,7 @@ checkType = \case
     ta <- checkType a
     tb <- addContext x ta $ checkType b
     return $ Pi ta (Abs tb)
+  e -> throwError $ NotAType e
 
 checkExp :: Exp -> Type -> M Term
 checkExp e t = do
@@ -135,6 +138,7 @@ inferExp = \case
          (App ta tb (Lam ta tb vf) va)
          (substTerm1 va vf)
       )
+  e -> throwError $ NotATerm e
 
 emptyEnv :: Env
 emptyEnv = Env
