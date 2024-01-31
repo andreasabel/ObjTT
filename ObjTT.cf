@@ -3,6 +3,7 @@ terminator Decl "" ;
 DAxiom.    Decl ::= Name ":" Exp ";" ;
 -- DDef.      Decl ::= Name ":" Exp ":=" Exp ";" ;
 
+-- Syntax for identity types
 EId.       Exp  ::= Exp1 "=" Exp1 ;
 ERefl.     Exp2 ::= "refl" "(" Exp ")" ;
 EIdRec.    Exp2 ::= "idrec" "(" "[" Name "," Name "," Name "]" Exp
@@ -14,6 +15,7 @@ EIdConv.   Exp2 ::= "idconv" "(" "[" Name "," Name "," Name "]" Exp
                              "," "[" Name "]" Exp
                              ")" ;
 
+-- Syntax for Pi types
 EPi.       Exp  ::= "(" Name ":" Exp ")" "->" Exp ;
 ELam.      Exp  ::= "\\" "(" Name ":" Exp ")" "->" Exp ;
 EApp.      Exp1 ::= Exp1 Exp2 ;
