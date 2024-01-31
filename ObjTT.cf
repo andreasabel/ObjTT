@@ -5,7 +5,7 @@ DAxiom.    Decl ::= Name ":" Exp ";" ;
 
 -- Syntax for identity types
 EId.       Exp  ::= Exp1 "=" Exp1 ;
-ERefl.     Exp2 ::= "refl" "(" Exp ")" ;
+ERefl.     Exp1 ::= "refl" Exp2 ;
 EIdRec.    Exp2 ::= "idrec" "(" "[" Name "," Name "," Name "]" Exp
                             "," Exp
                             "," "[" Name "]" Exp
@@ -23,7 +23,7 @@ EBetaConv. Exp2 ::= "betaconv" "(" Exp "," "[" Name "]" Exp ")" ;
 
 EVar.      Exp2 ::= Name ;
 EUniv.     Exp2 ::= "U";
-EEl.       Exp2 ::= "El" "(" Exp ")";
+EEl.       Exp1 ::= "El" Exp2;
 
 coercions Exp 2;
 

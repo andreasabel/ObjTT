@@ -11,7 +11,7 @@ invert_path : (A : U) -> (a : El(A)) -> (a' : El(A)) -> (p : a = a') -> (a' = a)
 invert_path_def :
   invert_path =
   (\ (A : U) -> \ (a : El(A)) -> \ (a' : El(A)) -> \ (p : a = a') ->
-    idrec([x,y,u] (y = x), p, [z] refl(z)));
+    idrec([x,y,u] (y = x), p, [z] refl z));
 
 subst : (A : U) -> (P : (a : El(A)) -> U) -> (a : El(A)) -> (b : El(A)) -> (p : a = b) -> (h : El (P a)) -> El (P b);
 subst_def :
@@ -23,10 +23,10 @@ subst_def :
          )
   );
 
-compose_paths : (A : U) -> (a1 : El(A)) -> (a2 : El(A)) -> (a3 : El(A)) -> (p : a1 = a2) -> (q : a2 = a3) -> a1 = a3;
+compose_paths : (A : U) -> (a1 : El A) -> (a2 : El A) -> (a3 : El A) -> (p : a1 = a2) -> (q : a2 = a3) -> a1 = a3;
 compose_paths_def :
   compose_paths =
-  (\ (A : U) -> \ (a1 : El(A)) -> \ (a2 : El(A)) -> \ (a3 : El(A)) -> \ (p : a1 = a2) ->
+  (\ (A : U) -> \ (a1 : El A) -> \ (a2 : El A) -> \ (a3 : El A) -> \ (p : a1 = a2) ->
     idrec( [x,y,u] (r : y = a3) -> x = a3
          , p
          , [x] \ (r : x = a3) -> r
