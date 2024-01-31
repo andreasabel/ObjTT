@@ -7,5 +7,13 @@ id_def : id = (\ (T : U) -> \ (x : El(T)) -> x) ;
 apply : (T : U) -> (V : U) -> (f : (x : El(T)) -> El(V)) -> (x : El(T)) -> El(V);
 apply_def : apply = (\ (T : U) -> \ (V : U) -> \ (f : (x : El(T)) -> El(V)) -> \ (x : El(T)) -> f x);
 
-myrefl : (A : U) -> (a : El(A)) -> a = a;
-myrefl_def : myrefl = (\ (A : U) -> \ (a : El(A)) -> refl(a));
+refl_path : (A : U) -> (a : El(A)) -> a = a;
+refl_path_def : refl_path = (\ (A : U) -> \ (a : El(A)) -> refl(a));
+
+
+invert_path : (A : U) -> (a : El(A)) -> (a' : El(A)) -> (p : a = a') -> (a' = a);
+invert_path_def :
+  invert_path =
+  (\ (A : U) -> \ (a : El(A)) -> \ (a' : El(A)) -> \ (p : a = a') -> idrec([x,y,u] (y = x), p, [z] refl(z)));
+-- error:
+-- TypeMismatch (EVar (Name "x")) (El (Var 6)) (El (Var 5))
