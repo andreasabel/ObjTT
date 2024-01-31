@@ -6,13 +6,13 @@ DAxiom.    Decl ::= Name ":" Exp ";" ;
 -- Syntax for identity types
 EId.       Exp  ::= Exp1 "=" Exp1 ;
 ERefl.     Exp1 ::= "refl" Exp2 ;
-EIdRec.    Exp2 ::= "idrec" "(" "[" Name "," Name "," Name "]" Exp
+EIdRec.    Exp2 ::= "idrec" "(" Name Name Name "." Exp
                             "," Exp
-                            "," "[" Name "]" Exp
+                            "," Name "." Exp
                             ")" ;
-EIdConv.   Exp2 ::= "idconv" "(" "[" Name "," Name "," Name "]" Exp
+EIdConv.   Exp2 ::= "idconv" "(" Name Name Name "." Exp
                              "," Exp
-                             "," "[" Name "]" Exp
+                             "," Name "." Exp
                              ")" ;
 
 -- Syntax for Pi types
