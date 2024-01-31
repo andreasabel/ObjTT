@@ -6,7 +6,7 @@ Build requirements:
 
 Build instruction:
 ```
-bnfc -d -m ObjTT.cf
+bnfc -d -m --text-token ObjTT.cf
 stack build
 ```
 

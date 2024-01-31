@@ -5,12 +5,14 @@ dependencies:
 - array
 - containers
 - mtl
+- text
 
 build-tools:
 - alex
 - happy
 
 default-extensions:
+- ImportQualifiedPost
 - LambdaCase
 
 executable:

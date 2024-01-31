@@ -5,6 +5,8 @@ module Main where
 import System.Environment ( getArgs )
 import System.Exit        ( exitFailure )
 import Control.Monad      ( when )
+import Data.Text          ( Text )
+import Data.Text.IO       qualified as Text
 
 import ObjTT.Abs   ( Decl )
 import ObjTT.Par   ( pListDecl, myLexer )
@@ -17,7 +19,7 @@ main = do
   args <- getArgs
   case args of
     ["--help"] -> usage
-    []         -> run =<< getContents
+    []         -> run =<< Text.getContents
     fs         -> mapM_ runFile fs
 
 usage :: IO ()
@@ -32,9 +34,9 @@ usage = do
 runFile :: FilePath -> IO ()
 runFile f = do
   putStrLn f
-  run =<< readFile f
+  run =<< Text.readFile f
 
-run :: String -> IO ()
+run :: Text -> IO ()
 run s =
   case pListDecl (myLexer s) of
     Left err -> do
