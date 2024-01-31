@@ -80,7 +80,7 @@ checkType = \case
     return $ Id t v w
   EPi x a b -> do
     ta <- checkType a
-    tb <- addContext x ta $ checkType b
+    tb <- addContext1 x ta $ checkType b
     return $ Pi ta (Abs tb)
   e -> throwError $ NotAType e
 
@@ -104,16 +104,24 @@ inferExp = \case
     (vp, t) <- inferExp p
     case t of
       Id ta va vb -> do
-        tc <- Abs . Abs . Abs <$> do
-          addContext x ta $ addContext y ta $ addContext u (Id ta (Var 1) (Var 0)) $ checkType c
-        vd <- addContext z ta $ checkExp d $ substType3 (Var 0) (Var 0) (Refl ta (Var 0)) tc
+        tc0 <- addContext1 x ta $
+               addContext1 y (weakType 1 ta) $
+               addContext1 u (Id (weakType 2 ta) (Var 1) (Var 0)) $
+               checkType c
+        let tc = Abs . Abs . Abs $ tc0
+        vd <- addContext1 z ta $ checkExp d $
+          substType (Refl (weakType 1 ta) (Var 0) : Var 0 : Var 0 : map Var [1..]) tc0
         return (IdRec ta tc va vb vp (Abs vd), substType3 va vb vp tc)
   EIdConv x y u c a z d -> do
     (va, ta) <- inferExp a
-    tc <- Abs . Abs . Abs <$> do
-      addContext x ta $ addContext y ta $ addContext u (Id ta (Var 1) (Var 0)) $ checkType c
+    tc0 <- addContext1 x ta $
+           addContext1 y (weakType 1 ta) $
+           addContext1 u (Id (weakType 2 ta) (Var 1) (Var 0)) $
+           checkType c
+    let tc = Abs . Abs . Abs $ tc0
     vd <- Abs <$> do
-      addContext z ta $ checkExp d $ substType3 (Var 0) (Var 0) (Refl ta (Var 0)) tc
+      addContext1 z ta $ checkExp d $
+        substType (Refl (weakType 1 ta) (Var 0) : Var 0 : Var 0 : map Var [1..]) tc0
     return (IdConv ta tc va vd,
             Id (substType3 va va (Refl ta va) tc)
                (IdRec ta tc va va (Refl ta va) vd)
@@ -121,7 +129,7 @@ inferExp = \case
            )
   ELam x a e -> do
     ta <- checkType a
-    (v, tb) <- addContext x ta $ inferExp e
+    (v, tb) <- addContext1 x ta $ inferExp e
     return (Lam ta (Abs tb) (Abs v), Pi ta (Abs tb))
   EApp f e -> do
     (v, t) <- inferExp f
@@ -132,7 +140,7 @@ inferExp = \case
   EBetaConv a x f -> do
     (va, ta) <- inferExp a
     (vf, tb) <- bimap Abs Abs <$> do
-      addContext x ta $ inferExp f
+      addContext1 x ta $ inferExp f
     return (BetaConv ta tb va vf,
       Id (substType1 va tb)
          (App ta tb (Lam ta tb vf) va)
@@ -165,16 +173,23 @@ lookupSig x = do
     Nothing -> throwError $ UnboundName x
     Just t -> return (Def x, t)
 
-addContext :: Name -> Type -> M a -> M a
-addContext x t = local $ \ env -> env { envCxt = (x,t) : envCxt env }
+addContext1 :: Name -> Type -> M a -> M a
+addContext1 x t = local $ \ env -> env { envCxt = (x,t) : envCxt env }
+
+addContext :: [(Name, Type)] -> M a -> M a
+addContext tel = local $ \ env -> env { envCxt = reverse tel' ++ envCxt env }
+  where
+    tel' = zipWith (\ n (x, t) -> (x, weakType n t)) [0..] tel
 
 addSignature :: Name -> Type -> M a -> M a
 addSignature x t = local $ \ env -> env { envSig = Map.insert x t $ envSig env }
 
 weak :: Int -> Term -> Term
+weak 0 = id
 weak n = substTerm (map Var [n..])
 
 weakType :: Int -> Type -> Type
+weakType 0 = id
 weakType n = substType (map Var [n..])
 
 substTerm1 :: Term -> Abs Term -> Term
@@ -184,7 +199,7 @@ substType1 :: Term -> Abs Type -> Type
 substType1 v (Abs t) = substType (v : map Var [0..]) t
 
 substType3 :: Term -> Term -> Term -> Abs (Abs (Abs Type)) -> Type
-substType3 va vb vc (Abs (Abs (Abs t))) = substType (va : vb : vc : map Var [0..]) t
+substType3 va vb vc (Abs (Abs (Abs t))) = substType (vc : vb : va : map Var [0..]) t
 
 substTerm :: [Term] -> Term -> Term
 substTerm vs = \case

@@ -1,6 +1,3 @@
--- id : Pi(U,[T] Pi(El(T), [x]El(T))) ;
--- id_def : id = \(U,[T]\(El(T),[x]x));
-
 id : (T : U) -> (x : El(T)) -> El(T) ;
 id_def : id = (\ (T : U) -> \ (x : El(T)) -> x) ;
 
@@ -10,10 +7,16 @@ apply_def : apply = (\ (T : U) -> \ (V : U) -> \ (f : (x : El(T)) -> El(V)) -> \
 refl_path : (A : U) -> (a : El(A)) -> a = a;
 refl_path_def : refl_path = (\ (A : U) -> \ (a : El(A)) -> refl(a));
 
-
 invert_path : (A : U) -> (a : El(A)) -> (a' : El(A)) -> (p : a = a') -> (a' = a);
 invert_path_def :
   invert_path =
-  (\ (A : U) -> \ (a : El(A)) -> \ (a' : El(A)) -> \ (p : a = a') -> idrec([x,y,u] (y = x), p, [z] refl(z)));
--- error:
--- TypeMismatch (EVar (Name "x")) (El (Var 6)) (El (Var 5))
+  (\ (A : U) -> \ (a : El(A)) -> \ (a' : El(A)) -> \ (p : a = a') -> 
+    idrec([x,y,u] (y = x), p, [z] refl(z)));
+
+{-
+Γ,x∈A,y∈A,u∈x=y ⊢P ∈ Type
+Γ ⊢p ∈ a = b
+Γ,x ∈ A ⊢ d ∈ P[x,x,refl(A,x)/x,y,u]
+-------------------------------------------------
+Γ ⊢ idrec(A,[x,y,u]P,a,b,p,[x]d) ∈ P[a,b,p/x,y,u]
+-}
