@@ -22,7 +22,7 @@ data Env = Env
 data TypeError
   = UnboundVariable Name
   | UnboundName Name
-  | TypeMismatch Type Type
+  | TypeMismatch Exp Type Type
   | NotAType Exp
   | NotATerm Exp
   deriving Show
@@ -89,7 +89,7 @@ checkExp e t = do
   (v, t') <- inferExp e
   case t' == t of
     True  -> return v
-    False -> throwError $ TypeMismatch t' t
+    False -> throwError $ TypeMismatch e t' t
 
 inferExp :: Exp -> M (Term, Type)
 inferExp = \case
