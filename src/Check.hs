@@ -78,7 +78,7 @@ checkType = \case
     (v, t) <- inferExp a
     w <- checkExp b t
     return $ Id t v w
-  EPi x a b -> do
+  EPi x a _to b -> do
     ta <- checkType a
     tb <- addContext1 x ta $ checkType b
     return $ Pi ta (Abs tb)
@@ -127,7 +127,7 @@ inferExp = \case
                (IdRec ta tc va va (Refl ta va) vd)
                (substTerm1 va vd)
            )
-  ELam x a e -> do
+  ELam _lambda x a _to e -> do
     ta <- checkType a
     (v, tb) <- addContext1 x ta $ inferExp e
     return (Lam ta (Abs tb) (Abs v), Pi ta (Abs tb))

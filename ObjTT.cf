@@ -16,8 +16,8 @@ EIdConv.   Exp2 ::= "idconv" "(" "[" Name "," Name "," Name "]" Exp
                              ")" ;
 
 -- Syntax for Pi types
-EPi.       Exp  ::= "(" Name ":" Exp ")" "->" Exp ;
-ELam.      Exp  ::= "\\" "(" Name ":" Exp ")" "->" Exp ;
+EPi.       Exp  ::= "(" Name ":" Exp ")" To Exp ;
+ELam.      Exp  ::= Lambda "(" Name ":" Exp ")" To Exp ;
 EApp.      Exp1 ::= Exp1 Exp2 ;
 EBetaConv. Exp2 ::= "betaconv" "(" Exp "," "[" Name "]" Exp ")" ;
 
@@ -29,6 +29,10 @@ coercions Exp 2;
 
 comment "--" ;
 comment "{-" "-}" ;
+
+-- This must be before token Name otherwise the → is not recognized as token To.
+token To     {"->"} | '→';
+token Lambda '\\' | 'λ';
 
 token Name (char - [ "-()[]{}.,;@\" \n\r\t\f" ]) + ;
   -- Both too liberal and too restrictive:
