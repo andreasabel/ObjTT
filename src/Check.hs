@@ -221,6 +221,7 @@ substTerm vs = \case
       (substTerm vs a)
       (substAbs substTerm vs d)
   Lam ta tb v -> Lam (substType vs ta) (substAbs substType vs tb) (substAbs substTerm vs v)
+  App ta tb v w -> App (substType vs ta) (substAbs substType vs tb) (substTerm vs v) (substTerm vs w)
   BetaConv ta tb va vb ->
     BetaConv (substType vs ta) (substAbs substType vs tb) (substTerm vs va) (substAbs substTerm vs vb)
 

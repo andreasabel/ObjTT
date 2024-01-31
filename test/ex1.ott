@@ -10,9 +10,19 @@ refl_path_def : refl_path = (\ (A : U) -> \ (a : El(A)) -> refl(a));
 invert_path : (A : U) -> (a : El(A)) -> (a' : El(A)) -> (p : a = a') -> (a' = a);
 invert_path_def :
   invert_path =
-  (\ (A : U) -> \ (a : El(A)) -> \ (a' : El(A)) -> \ (p : a = a') -> 
+  (\ (A : U) -> \ (a : El(A)) -> \ (a' : El(A)) -> \ (p : a = a') ->
     idrec([x,y,u] (y = x), p, [z] refl(z)));
 
+subst : (A : U) -> (P : (a : El(A)) -> U) -> (a : El(A)) -> (b : El(A)) -> (p : a = b) -> (h : El (P a)) -> El (P b);
+subst_def :
+  subst =
+  (\ (A : U) -> \ (P : (a : El(A)) -> U) -> \ (a : El(A)) -> \ (b : El(A)) -> \ (p : a = b) -> \ (h : El (P a)) ->
+    idrec( [x,y,u] (h : El (P x)) -> El (P y)
+         , p
+         , [x] \(h : El (P x)) -> h
+         )
+      h
+  );
 {-
 Γ,x∈A,y∈A,u∈x=y ⊢P ∈ Type
 Γ ⊢p ∈ a = b
