@@ -7,15 +7,10 @@ import System.Exit        ( exitFailure )
 import Control.Monad      ( when )
 
 import ObjTT.Abs   ( Decl )
-import ObjTT.Lex   ( Token, mkPosToken )
 import ObjTT.Par   ( pListDecl, myLexer )
 import ObjTT.Print ( Print, printTree )
 
 import Check (checkDecls, runChecker)
-
-type Err        = Either String
-type ParseFun a = [Token] -> Err a
-type Verbosity  = Int
 
 main :: IO ()
 main = do
@@ -41,18 +36,13 @@ runFile f = do
 
 run :: String -> IO ()
 run s =
-  case pListDecl ts of
+  case pListDecl (myLexer s) of
     Left err -> do
       putStrLn "\nParse              Failed...\n"
-      putStrLn "Tokens:"
-      mapM_ (putStr . showPosToken . mkPosToken) ts
       putStrLn err
       exitFailure
     Right tree -> do
       check tree
-  where
-  ts = myLexer s
-  showPosToken ((l,c),t) = concat [ show l, ":", show c, "\t", show t ]
 
 check :: [Decl] -> IO ()
 check ds =
